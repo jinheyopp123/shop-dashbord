@@ -86,6 +86,25 @@ app.post('/update-task-status', (req, res) => {
   });
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log('서버가 http://localhost:{port}에서 실행중 입니다.');
+// 새 작업 추가 양식
+app.get('/new-task', (req, res) => {
+  res.render('new-task-form');
+});
+
+// 새 작업 추가
+app.post('/new-task', (req, res) => {
+  const { taskName, taskDescription } = req.body;
+
+  // 데이터베이스에 새 작업 추가
+  db.run('INSERT INTO tasks (name, description) VALUES (?, ?)', [taskName, taskDescription], (err) => {
+    if (err) {
+      return res.status(500).send('Database error.');
+    }
+    res.redirect('/dashboard'); // 새 작업이 추가된 후 대시보드 페이지로 리디렉션
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`서버가 http://localhost:${PORT} 에서 실행중입니다.`);
 });
