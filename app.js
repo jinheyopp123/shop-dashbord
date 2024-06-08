@@ -1,9 +1,8 @@
 const express = require('express');
 const session = require('express-session');
-const bcrypt = require('bcryptjs');
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcryptjs');
 const path = require('path');
-const flash = require('connect-flash');
 
 const app = express();
 const db = new sqlite3.Database('./database.db');
@@ -14,26 +13,9 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }));
-app.use(flash());
-
-app.use((req, res, next) => {
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  next();
-});
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
-// 로그인 여부를 확인하는 미들웨어
-const ensureAuthenticated = (req, res, next) => {
-  if (req.session.userId) {
-    return next();
-  } else {
-    req.flash('error_msg', '로그인 후 사용해 주세요.');
-    res.redirect('/login');
-  }
-};
 
 // 회원가입
 app.get('/register', (req, res) => {
@@ -79,8 +61,13 @@ app.get('/logout', (req, res) => {
 });
 
 // 대시보드
-app.get('/dashboard', ensureAuthenticated, (req, res) => {
-  db.all('SELECT * FROM Tasks', (err, tasks) => {
+app.get('/dashboard', (req, res) => {
+  // 사용자가 로그인되어 있지 않으면 로그인 페이지로 리다이렉트
+  if (!req.session.userId) {
+    return res.redirect('/login');
+  }
+
+  db.all('SELECT * FROM tasks', (err, tasks) => {
     if (err) {
       return res.status(500).send('Database error.');
     }
@@ -88,22 +75,11 @@ app.get('/dashboard', ensureAuthenticated, (req, res) => {
   });
 });
 
-app.post('/tasks', ensureAuthenticated, (req, res) => {
-  const { task_name, worker_name } = req.body;
-
-  db.run('INSERT INTO Tasks (task_name, worker_name) VALUES (?, ?)', [task_name, worker_name], (err) => {
-    if (err) {
-      return res.status(500).send('Database error.');
-    }
-    res.redirect('/dashboard');
-  });
-});
-
 // 작업 상태 업데이트
-app.post('/tasks/update', ensureAuthenticated, (req, res) => {
-  const { task_id, status } = req.body;
+app.post('/update-task-status', (req, res) => {
+  const { taskId, status } = req.body;
 
-  db.run('UPDATE Tasks SET status = ? WHERE task_id = ?', [status, task_id], (err) => {
+  db.run('UPDATE tasks SET status = ? WHERE id = ?', [status, taskId], (err) => {
     if (err) {
       return res.status(500).send('Database error.');
     }
