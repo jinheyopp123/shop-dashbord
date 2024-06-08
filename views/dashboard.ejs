@@ -4,27 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Task Dashboard</title>
-  <style>
-    .task-item {
-      margin-bottom: 10px;
-    }
-  </style>
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <h1>Task Dashboard</h1>
-  <div id="task-list">
-    <% tasks.forEach(task => { %>
-      <div class="task-item">
-        <h3><%= task.name %></h3>
-        <p>Status: <%= task.status %></p>
-        <select onchange="updateTaskStatus('<%= task.id %>', this.value)">
-          <option value="To Do" <%= task.status === 'To Do' ? 'selected' : '' %>>To Do</option>
-          <option value="In Progress" <%= task.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
-          <option value="Done" <%= task.status === 'Done' ? 'selected' : '' %>>Done</option>
-        </select>
-      </div>
-    <% }) %>
-  </div>
+  <header>
+    <h1>Task Dashboard</h1>
+    <a href="/logout">Logout</a>
+  </header>
+
+  <main>
+    <div class="task-container">
+      <% tasks.forEach(task => { %>
+        <div class="task">
+          <h2><%= task.name %></h2>
+          <div class="status">
+            <span class="label">Status:</span>
+            <select onchange="updateTaskStatus('<%= task.id %>', this.value)">
+              <option value="To Do" <%= task.status === 'To Do' ? 'selected' : '' %>>To Do</option>
+              <option value="In Progress" <%= task.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+              <option value="Done" <%= task.status === 'Done' ? 'selected' : '' %>>Done</option>
+            </select>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </main>
 
   <script>
     async function updateTaskStatus(taskId, status) {
@@ -38,7 +42,6 @@
         });
         const data = await response.json();
         if (data.success) {
-          // 업데이트 성공 시 메시지 출력 혹은 다른 작업 수행
           console.log('Task status updated successfully');
         }
       } catch (error) {
