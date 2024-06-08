@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Dashboard</title>
+  <style>
+    .task-item {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Task Dashboard</h1>
+  <div id="task-list">
+    <% tasks.forEach(task => { %>
+      <div class="task-item">
+        <h3><%= task.name %></h3>
+        <p>Status: <%= task.status %></p>
+        <select onchange="updateTaskStatus('<%= task.id %>', this.value)">
+          <option value="To Do" <%= task.status === 'To Do' ? 'selected' : '' %>>To Do</option>
+          <option value="In Progress" <%= task.status === 'In Progress' ? 'selected' : '' %>>In Progress</option>
+          <option value="Done" <%= task.status === 'Done' ? 'selected' : '' %>>Done</option>
+        </select>
+      </div>
+    <% }) %>
+  </div>
+
+  <script>
+    async function updateTaskStatus(taskId, status) {
+      try {
+        const response = await fetch('/update-task-status', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ taskId, status }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          // 업데이트 성공 시 메시지 출력 혹은 다른 작업 수행
+          console.log('Task status updated successfully');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  </script>
+</body>
+</html>
