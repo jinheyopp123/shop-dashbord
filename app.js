@@ -13,7 +13,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }));
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -87,6 +86,6 @@ app.post('/update-task-status', (req, res) => {
   });
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+app.listen(process.env.PORT || 3000, () => {
+  console.log('서버가 http://localhost:{port}에서 실행중 입니다.');
 });
