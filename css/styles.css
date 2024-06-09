@@ -1,0 +1,19 @@
+/* Example styles */
+body {
+    font-family: Arial, sans-serif;
+}
+
+nav {
+    background-color: #333;
+    color: white;
+    padding: 1em;
+}
+
+main {
+    padding: 2em;
+}
+
+button {
+    padding: 0.5em 1em;
+    margin-top: 1em;
+}
