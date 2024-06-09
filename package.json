@@ -2,9 +2,9 @@
   "name": "shop-dashbord",
   "version": "1.0.0",
   "description": "대시보드",
-  "main": "js/app.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node app"
+    "start": "node app.js"
   },
   "keywords": [],
   "author": "",
