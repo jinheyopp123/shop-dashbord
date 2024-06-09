@@ -1,0 +1,17 @@
+{
+  "name": "shop-dashbord",
+  "version": "1.0.0",
+  "description": "대시보드",
+  "main": "js/app.js",
+  "scripts": {
+    "start": "node app"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "sqlite3": "^5.1.7"
+  }
+}
